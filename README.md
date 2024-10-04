@@ -28,7 +28,6 @@ chmod +x install.sh
 ```bash
 sudo ./install.sh
 ```
-
 ## Requirements
 
 - Debian-based Azure VM

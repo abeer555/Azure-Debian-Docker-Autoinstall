@@ -13,9 +13,21 @@ This repository contains a script for automatically installing Docker on Debian-
 ## Usage
 
 1. Clone this repository:
+```bash
+git clone https://github.com/abeer555/Azure-Debian-Docker-Autoinstall.git
+```
 2. Navigate to the directory:
+```bash
+cd Azure-Debian-Docker-Autoinstall
+```
 3. Make the script executable:
+```bash
+chmod +x install.sh
+```
 4. Run the script with sudo:
+```bash
+sudo ./install.sh
+```
 
 ## Requirements
 
@@ -30,4 +42,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-
-# Script for automated installation of Docker on Debian (ARM64)
+# Script for automated installation of Docker on Debian (amd64)
 
 set -e
 
@@ -13,9 +12,11 @@ check_success() {
     fi
 }
 
- #Check if running on amd64 architecture
+# Check if running on amd64 architecture
 if [ "$(uname -m)" != "x86_64" ]; then
     echo "This script is intended for amd64 architecture. Exiting."
+    exit 1
+fi
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -54,5 +55,6 @@ check_success "Failed to install Docker packages"
 echo "Cleaning up..."
 rm *.deb
 check_success "Failed to remove .deb files"
+
 echo "Docker installation completed successfully!"
 echo "You may need to log out and log back in for group changes to take effect."

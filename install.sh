@@ -37,7 +37,6 @@ DOCKER_PACKAGES=(
     "containerd.io_1.7.22-1_amd64.deb"
     "docker-buildx-plugin_0.17.1-1~debian.12~bookworm_amd64.deb"
     "docker-ce-cli_27.3.1-1~debian.12~bookworm_amd64.deb"
-    "docker-ce-rootless-extras_27.3.1-1~debian.12~bookworm_amd64.deb"
     "docker-ce_27.3.1-1~debian.12~bookworm_amd64.deb"
     "docker-compose-plugin_2.29.7-1~debian.12~bookworm_amd64.deb"
 )

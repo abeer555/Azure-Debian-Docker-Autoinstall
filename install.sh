@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Script for automated installation of Docker on Debian (amd64)
+# Updated: November 2024
 
 set -e
 

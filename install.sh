@@ -1,60 +1,46 @@
 #!/bin/bash
 
-# Script for automated installation of Docker on Debian (amd64)
-# Updated: November 2024
+# Update system
+echo "Updating system..."
+sudo apt update && sudo apt upgrade -y
 
-set -e
+# Install required packages
+echo "Installing required packages..."
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
 
-# Function to check if a command was successful
-check_success() {
-    if [ $? -ne 0 ]; then
-        echo "Error: $1"
-        exit 1
-    fi
-}
+# Add Docker's official GPG key
+echo "Adding Docker's GPG key..."
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-# Check if running on amd64 architecture
-if [ "$(uname -m)" != "x86_64" ]; then
-    echo "This script is intended for amd64 architecture. Exiting."
-    exit 1
+# Set up the Docker repository
+echo "Setting up Docker repository..."
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Update package index
+echo "Updating package index..."
+sudo apt update
+
+# Install Docker Engine
+echo "Installing Docker Engine..."
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+
+# Verify Docker is running
+echo "Checking Docker status..."
+sudo systemctl status docker
+
+# Start Docker if it's not running
+if ! sudo systemctl is-active --quiet docker; then
+    echo "Starting Docker..."
+    sudo systemctl start docker
+    sudo systemctl enable docker
 fi
 
-# Check if running as root
-if [ "$EUID" -ne 0 ]; then
-    echo "Please run this script as root or using sudo."
-    exit 1
-fi
+# Test Docker installation
+echo "Running a test container..."
+sudo docker run hello-world
 
-# Remove old versions of Docker
-echo "Removing old Docker packages..."
-for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do
-    sudo apt-get remove $pkg -y
-done
-check_success "Failed to remove old Docker packages"
+# Optional: Add user to Docker group
+echo "Adding user to Docker group (optional)..."
+sudo usermod -aG docker $USER
 
-# Download Docker packages
-echo "Downloading Docker packages..."
-DOCKER_PACKAGES=(
-    "containerd.io_1.7.22-1_amd64.deb"
-    "docker-buildx-plugin_0.17.1-1~debian.12~bookworm_amd64.deb"
-    "docker-ce-cli_27.3.1-1~debian.12~bookworm_amd64.deb"
-    "docker-ce_27.3.1-1~debian.12~bookworm_amd64.deb"
-    "docker-compose-plugin_2.29.7-1~debian.12~bookworm_amd64.deb"
-)
-for package in "${DOCKER_PACKAGES[@]}"; do
-    wget "https://download.docker.com/linux/debian/dists/bookworm/pool/stable/amd64/$package"
-    check_success "Failed to download $package"
-done
-
-# Install Docker packages
-echo "Installing Docker packages..."
-sudo dpkg -i *.deb
-check_success "Failed to install Docker packages"
-
-# Clean up downloaded .deb files
-echo "Cleaning up..."
-rm *.deb
-check_success "Failed to remove .deb files"
-
-echo "Docker installation completed successfully!"
-echo "You may need to log out and log back in for group changes to take effect."
+echo "Docker installation complete. Please log out and back in for group changes to take effect (if applicable)."
